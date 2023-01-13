@@ -1,0 +1,6 @@
+{
+    "application_id": "",
+    "execution_role_arn": "arn:aws:iam::474552980369:role/EMRServerlessS3RuntimeRole",
+    "s3_buckets": [],
+    "bootstrap_server": ""
+}
