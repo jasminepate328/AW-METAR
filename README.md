@@ -1,2 +1,2 @@
 # AW-METAR
-Aviation Weather Aggregated Reports
+Aviation Weather - Meteorological Terminal Air Report
