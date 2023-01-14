@@ -1,0 +1,38 @@
+
+
+[
+    {
+      "Name": "OpenSky CSV to Parquet",
+      "ActionOnFailure": "CONTINUE",
+      "HadoopJarStep": {
+        "Jar": "command-runner.jar",
+        "Args": [
+          "spark-submit",
+          "--deploy-mode",
+          "cluster",
+          "--master",
+          "yarn",
+          "--conf",
+          "spark.yarn.submit.waitAppCompletion=true",
+          "s3a://{{ work_bucket }}/pyspark_apps/process/opensky_csv_to_parquet.py"
+        ]
+      }
+    },
+    {
+      "Name": "NOAA CSV to Parquet",
+      "ActionOnFailure": "CONTINUE",
+      "HadoopJarStep": {
+        "Jar": "command-runner.jar",
+        "Args": [
+          "spark-submit",
+          "--deploy-mode",
+          "cluster",
+          "--master",
+          "yarn",
+          "--conf",
+          "spark.yarn.submit.waitAppCompletion=true",
+          "s3a://{{ work_bucket }}/pyspark_apps/process/noaa_csv_to_parquet_ssm.py"
+        ]
+      }
+    }
+]
