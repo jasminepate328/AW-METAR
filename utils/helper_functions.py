@@ -1,16 +1,22 @@
 import argparse
 import boto3
+import logging
 
 ssm_client = boto3.client('ssm')
 sts_client = boto3.client('sts')
 
+logger = logging.basicConfig(format='[%(asctime)s] %(levelname)s - %(message)s', level=logging.INFO)
+
+NOAA_RESPONSE_TYPES = ['forecast', 'forecastHourly', 'forecastGridData']
+
 def get_parameters():
     params = {}
     params = {
-        'bronze_bucket': ssm_client.get_parameter(Name='/sk-anlys/bronze_bucket')['Parameter']['Value'],
-        'silver_bucket': ssm_client.get_parameter(Name='/sk-anlys/silver_bucket')['Parameter']['Value'],
-        'work_bucket': ssm_client.get_parameter(Name='/sk-anlys/work_bucket')['Parameter']['Value'],
-
+        'opensky_username': ssm_client.get_parameter(Name='/opensky/username')['Parameter']['Value'],
+        'opensky_password': ssm_client.get_parameter(Name='/opensky/password')['Parameter']['Value'],
+        'bronze_bucket': ssm_client.get_parameter(Name='/aw-metar/bronze_bucket')['Parameter']['Value'],
+        'silver_bucket': ssm_client.get_parameter(Name='/aw-metar/silver_bucket')['Parameter']['Value'],
+        'work_bucket': ssm_client.get_parameter(Name='/aw-metar/work_bucket')['Parameter']['Value'],
     }    
     return params
 
