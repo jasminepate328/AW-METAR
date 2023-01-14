@@ -17,7 +17,7 @@ def main():
     args = parse_args()
 
     # create and tag bucket
-    bucket_name = f'sk-anlys-bootstrap-{config.account_id}-{config.region}'
+    bucket_name = f'aw-metar-bootstrap-{config.account_id}-{config.region}'
     create_bucket(bucket_name)
 
     put_ssm_parameter(bucket_name)
@@ -41,7 +41,7 @@ def create_bucket(bucket_name):
 def put_ssm_parameter(bucket_name):
     try:
         response = ssm_client.put_parameter(
-            Name='/emr_demo/bootstrap_bucket',
+            Name='/aw-metar/bootstrap_bucket',
             Description='Bootstrap scripts bucket',
             Value=bucket_name,
             Type='String',
@@ -80,7 +80,7 @@ def create_stack(stack_name, cfn_template, cfn_params_path, ec2_key_name, bucket
         'Tags': [
             {
                 'Key': 'Project',
-                'Value': 'EMR Demo'
+                'Value': 'AW-METAR'
             },
         ]
     }

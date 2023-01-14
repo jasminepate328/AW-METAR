@@ -50,7 +50,7 @@ Resources:
   RawBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Join ['-', ['sk-anlys', 'raw', !Ref 'AWS::AccountId', !Ref 'AWS::Region']]
+      BucketName: !Join ['-', ['aw-metar', 'raw', !Ref 'AWS::AccountId', !Ref 'AWS::Region']]
       VersioningConfiguration:
         Status: Suspended
       AccelerateConfiguration:
@@ -61,7 +61,7 @@ Resources:
   ProcessedBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Join ['-', ['sk-anlys', 'processed', !Ref 'AWS::AccountId', !Ref 'AWS::Region']]
+      BucketName: !Join ['-', ['aw-metar', 'processed', !Ref 'AWS::AccountId', !Ref 'AWS::Region']]
       VersioningConfiguration:
         Status: Suspended
       AccelerateConfiguration:
@@ -72,7 +72,7 @@ Resources:
   AnalyzedBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Join ['-', ['sk-anlys', 'analyzed', !Ref 'AWS::AccountId', !Ref 'AWS::Region']]
+      BucketName: !Join ['-', ['aw-metar', 'analyzed', !Ref 'AWS::AccountId', !Ref 'AWS::Region']]
       VersioningConfiguration:
         Status: Suspended
       AccelerateConfiguration:
@@ -83,7 +83,7 @@ Resources:
   WorkBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Join ['-', ['sk-anlys', 'work', !Ref 'AWS::AccountId', !Ref 'AWS::Region']]
+      BucketName: !Join ['-', ['aw-metar', 'work', !Ref 'AWS::AccountId', !Ref 'AWS::Region']]
       VersioningConfiguration:
         Status: Suspended
       AccelerateConfiguration:
@@ -94,7 +94,7 @@ Resources:
   LogsBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Join ['-', ['sk-anlys', 'logs', !Ref 'AWS::AccountId', !Ref 'AWS::Region']]
+      BucketName: !Join ['-', ['aw-metar', 'logs', !Ref 'AWS::AccountId', !Ref 'AWS::Region']]
       VersioningConfiguration:
         Status: Suspended
       Tags:
@@ -103,7 +103,7 @@ Resources:
   GlueDatabaseBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Join ['-', ['sk-anlys', 'glue-db', !Ref 'AWS::AccountId', !Ref 'AWS::Region']]
+      BucketName: !Join ['-', ['aw-metar', 'glue-db', !Ref 'AWS::AccountId', !Ref 'AWS::Region']]
       VersioningConfiguration:
         Status: Suspended
       Tags:
@@ -124,7 +124,7 @@ Resources:
       CatalogId: !Ref AWS::AccountId
       DatabaseInput:
         Description: 'EMR Glue Data Catalog'
-        Name: 'sk_anlys'
+        Name: 'aw_metar'
         LocationUri: !Ref GlueDatabaseBucket
   CrawlerRole:
     Type: AWS::IAM::Role
@@ -155,7 +155,7 @@ Resources:
   RawCrawler:
     Type: AWS::Glue::Crawler
     Properties:
-      Name: 'sk-anlys-raw'
+      Name: 'aw-metar-raw'
       Role: !GetAtt 'CrawlerRole.Arn'
       DatabaseName: !Ref GlueDatabase
       Targets:
@@ -173,7 +173,7 @@ Resources:
   ProcessedCrawler:
     Type: AWS::Glue::Crawler
     Properties:
-      Name: 'sk-anlys-processed'
+      Name: 'aw-metar-processed'
       Role: !GetAtt 'CrawlerRole.Arn'
       DatabaseName: !Ref GlueDatabase
       Targets:
@@ -323,7 +323,7 @@ Resources:
   EmrRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: 'SK_AnlysRole'
+      RoleName: 'aw_metarRole'
       AssumeRolePolicyDocument:
         Version: 2008-10-17
         Statement:
@@ -357,7 +357,7 @@ Resources:
             Statement:
               - Effect: Allow
                 Action: 'ssm:*'
-                Resource: !Join [':', ['arn:aws:ssm', !Ref 'AWS::Region', !Ref 'AWS::AccountId', 'parameter/sk_anlys*']]
+                Resource: !Join [':', ['arn:aws:ssm', !Ref 'AWS::Region', !Ref 'AWS::AccountId', 'parameter/aw_metar*']]
   EmrEc2InstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
@@ -419,7 +419,7 @@ Resources:
   RawBucketParameter:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: '/sk_anlys/bronze_bucket'
+      Name: '/aw_metar/bronze_bucket'
       Type: String
       Value: !Ref RawBucket
       Description: Raw data bucket name
@@ -428,7 +428,7 @@ Resources:
   ProcessedBucketParameter:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: '/sk_anlys/silver_bucket'
+      Name: '/aw_metar/silver_bucket'
       Type: String
       Value: !Ref ProcessedBucket
       Description: Processed data bucket name
@@ -437,7 +437,7 @@ Resources:
   AnalyzedBucketParameter:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: '/sk_anlys/gold_bucket'
+      Name: '/aw_metar/gold_bucket'
       Type: String
       Value: !Ref AnalyzedBucket
       Description: Analyzed data bucket name
@@ -446,7 +446,7 @@ Resources:
   WorkBucketParameter:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: '/sk_anlys/work_bucket'
+      Name: '/aw_metar/work_bucket'
       Type: String
       Value: !Ref WorkBucket
       Description: Work bucket name
@@ -455,7 +455,7 @@ Resources:
   LogsBucketParameter:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: '/sk_anlys/logs_bucket'
+      Name: '/aw_metar/logs_bucket'
       Type: String
       Value: !Ref LogsBucket
       Description: Logs bucket name
@@ -464,7 +464,7 @@ Resources:
   GlueDbBucketParameter:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: '/sk_anlys/glue_db_bucket'
+      Name: '/aw_metar/glue_db_bucket'
       Type: String
       Value: !Ref LogsBucket
       Description: Logs bucket name
@@ -473,7 +473,7 @@ Resources:
   AirflowBucketParameter:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: '/sk_anlys/airflow_bucket'
+      Name: '/aw_metar/airflow_bucket'
       Type: String
       Value: !Ref AirflowBucket
       Description: MWAA (Airflow) bucket name
@@ -482,7 +482,7 @@ Resources:
   VpcIdParameter:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: '/sk_anlys/vpc_id'
+      Name: '/aw_metar/vpc_id'
       Type: String
       Value: !Ref VPC
       Description: EMR cluster id
@@ -491,7 +491,7 @@ Resources:
   ClusterIdParameter:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: '/sk_anlys/cluster_id'
+      Name: '/aw_metar/cluster_id'
       Type: String
       Value: !Ref Cluster
       Description: EMR cluster id
@@ -500,7 +500,7 @@ Resources:
   Ec2KeyNameParameter:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: '/sk_anlys/ec2_key_name'
+      Name: '/aw_metar/ec2_key_name'
       Type: String
       Value: !Ref Ec2KeyName
       Description: EC2 Key pair name
@@ -509,7 +509,7 @@ Resources:
   PublicSubnetParameter:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: '/sk_anlys/ec2_subnet_id'
+      Name: '/aw_metar/ec2_subnet_id'
       Type: String
       Value: !Ref PublicSubnet
       Description: Public subnet id
@@ -518,7 +518,7 @@ Resources:
   LogGroupArnParameter:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: '/sk_anlys/sm_log_group_arn'
+      Name: '/aw_metar/sm_log_group_arn'
       Type: String
       Value: !GetAtt StateMachineLogGroup.Arn
       Description: State machine log group arn
@@ -527,7 +527,7 @@ Resources:
   StateMachineRoleArnParameter:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: '/sk_anlys/sm_role_arn'
+      Name: '/aw_metar/sm_role_arn'
       Type: String
       Value: !GetAtt StateExecutionRole.Arn
       Description: State machine role arn
@@ -536,7 +536,7 @@ Resources:
   EmrEc2RoleRoleArnParameter:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: '/sk_anlys/emr_ec2_role'
+      Name: '/aw_metar/emr_ec2_role'
       Type: String
       Value: !Ref EmrEc2Role
       Description: Name of JobFlowRole role
@@ -545,7 +545,7 @@ Resources:
   EmrRoleRoleArnParameter:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: '/sk_anlys/emr_role'
+      Name: '/aw_metar/emr_role'
       Type: String
       Value: !Ref EmrRole
       Description: Name of ServiceRole role
@@ -554,7 +554,7 @@ Resources:
   ClusterMasterPublicDNS:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: '/sk_anlys/master_public_dns'
+      Name: '/aw_metar/master_public_dns'
       Type: String
       Value: !GetAtt Cluster.MasterPublicDNS
       Description: Master Node Public DNS
