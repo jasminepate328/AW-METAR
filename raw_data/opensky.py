@@ -1,7 +1,7 @@
 from opensky_api import OpenSkyApi
 from utils.helper_functions import *
 
-class OpenApi:
+class OpenSky:
     def __init__(self):
         params = get_parameters()
         if params.get('opensky_username') and params.get('opensky_password'):

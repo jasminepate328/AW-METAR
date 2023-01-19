@@ -9,15 +9,14 @@ class WeatherService:
         try:
             if type not in NOAA_RESPONSE_TYPES.append(None): 
                 raise("Invalid response type")
-            forecast = self.noaa.get_forecasts(lat, long, type)
+            forecast = self.noaa.points_forecasts(lat, long, type)
 
-           # TODO: format data based on type
             match type:
-                case 'forecast':
+                case 'forecast': # returns data in 12 hour intervels
                     return
                 case 'forecastHourly':
                     return
-                case 'forecastGridData':
+                case 'forecastGridData': # 1 hour intervels grouped by data category type 
                     return
                 case _:
                     return forecast
