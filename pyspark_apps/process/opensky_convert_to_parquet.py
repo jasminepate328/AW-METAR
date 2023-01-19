@@ -11,17 +11,17 @@ def main():
     params = get_parameters()
     dir_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
     
-    spark = SparkSession.builder.appName("opensky-csv-to-parquet").getOrCreate()
+    spark = SparkSession.builder.appName("opensky-convert-to-parquet").getOrCreate()
     for file in s3_client.list_objects(Bucket=params['bronze_bucket'], Delimiter='/'):
         convert_to_parquet(spark, dir_path + file, params)
 
-def convert_to_parquet(spark, file_path, params):
+def convert_to_parquet(spark, file_path, format, params):
     sky_df = spark.read \
-        .format("csv") \
+        .format(format) \
         .option("header", "true") \
         .option("delimiter", ",") \
         .option("inferSchema", "true") \
-        .load(f"s3a://{params['bronze_bucket']}/{file_path}.csv")
+        .load(f"s3a://{params['bronze_bucket']}/{file_path}.{format}")
 
     sky_df.write \
         .format("parquet") \
