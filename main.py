@@ -1,11 +1,15 @@
+import os
 import json
 
-from pyspark.sql.session import SparkSession
-from pyspark.sql import DataFrame as SDF
-from pyspark.sql.functions import explode
+import boto3
+from botocore.exceptions import ClientError
 
-from raw_data.noaa import WeatherService
-from raw_data.opensky import OpenSky
+from data.imports.noaa import WeatherService
+from data.imports.opensky import OpenSky
+from utils.helper_functions import *
+
+s3_client = boto3.client('s3')
+ssm_client = boto3.client('ssm')
 
 """
  TODO: 
@@ -15,27 +19,39 @@ from raw_data.opensky import OpenSky
     Convert to parquet and save file to S3 
 """
 
-spark = SparkSession.builder.appName('importData').getOrCreate()
-
 def import_data():
-    os = OpenSky.get_states
-
-    serialized_json = json.dumps(os.states, default=lambda o: o.__dict__, 
-            sort_keys=True, indent=4)
-
-    with open('raw_data/opensky.json', 'w') as outfile:
-        outfile.write(serialized_json) 
+    # Get Aviation Data
+    with open('data/raw/opensky.json', 'w') as outfile:
+        os_states = OpenSky().get_states()
+        outfile.write(os_states) 
     outfile.close()
 
-    with open('raw_data/noaa.json', 'w') as outfile:
-        for i in os.states:
-            WeatherService.data_by_coordinates(i.latitude, i.longitude, "forecastGridData")
-            
-    # read and write all files in the diretory.  
-    # recursive_loaded_df = spark.read.format("parquet")\
-    #     .option("recursiveFileLookup", "true")\
-    #     .load("examples/src/main/resources/dir1")
+    # Get Weather Data
+    with open('data/raw/noaa.json', 'w') as outfile:
+        lat_long = json.loads(os_states)
+        for i in lat_long:
+            forecast = WeatherService().data_by_coordinates(i['latitude'], i['longitude'], type="forecastGridData")
+            if forecast:
+                outfile.write(forecast)
+    outfile.close()
+    upload_directory()
 
+def upload_directory():
+    params = get_parameters(['bronze_bucket'])
+
+    dir_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    path = f'{dir_path}/AW-METAR/data/raw/'
+    bronze_bucket = params['bronze_bucket']
+    for root, _, files in os.walk(path):
+        for file in files:
+            try:
+                if file != '.DS_Store':
+                    file_directory = os.path.basename(os.path.dirname(os.path.join(root, file)))
+                    key = f'{file_directory}/{file}'
+                    s3_client.upload_file(os.path.join(root, file), bronze_bucket, key)
+                    logging.info(f"File '{key} upload to bucket {bronze_bucket} as key '{key}'")
+            except ClientError as e:
+                logging.error(e)    
 
 if __name__ == "__main__":
     import_data()
