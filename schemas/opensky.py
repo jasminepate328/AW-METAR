@@ -9,4 +9,4 @@ states_schema = StructType(fields=[
     StructField('velocity', DoubleType(), False),
     StructField('baro_altitude', DoubleType(), False),
     StructField('icao24', StringType(), False)
-])
+]) 
