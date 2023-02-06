@@ -5,6 +5,8 @@ from botocore.exceptions import ClientError
 
 ssm_client = boto3.client('ssm')
 sts_client = boto3.client('sts')
+emr_client = boto3.client('emr')
+glue_client = boto3.client('glue')
 
 logging.basicConfig(format='[%(asctime)s] %(levelname)s - %(message)s', level=logging.INFO)
 
