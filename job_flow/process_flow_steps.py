@@ -34,13 +34,5 @@ def get_steps(params, job_type):
         new_steps.append(step)
     return new_steps
 
-def start_crawler(crawler_name):
-    try:
-        glue_client.start_crawler(Name=crawler_name)
-    except ClientError as e:
-        logging.error(e)
-        return False
-    return True
-
 if __name__ == '__main__':
     main()

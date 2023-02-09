@@ -19,6 +19,7 @@ def get_parameters(requested_params) -> list:
             'opensky_password': '/opensky/password',
             'bronze_bucket': '/aw-metar/bronze_bucket',
             'silver_bucket': '/aw-metar/silver_bucket',
+            'gold_bucket': '/aw-metar/gold_bucket',
             'work_bucket': '/aw-metar/work_bucket'
         }
         return {x: ssm_client.get_parameter(Name=params[x])['Parameter']['Value'] for x in requested_params} 
@@ -33,6 +34,7 @@ def parse_args():
     parser.add_argument('-a', '--app_name', required=False, help='Environment')
     parser.add_argument('-t', '--job-type', required=False, choices=['process', 'analyze'], help='process or analysis')
     parser.add_argument('-c', '--crawler-name', required=False, help='Name of EC2 Keypair')
+    parser.add_argument('-e', '--ec2-key-path', required=True, help='EC2 Key Path')
 
     args = parser.parse_args()
     return args
